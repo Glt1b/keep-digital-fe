@@ -11,10 +11,10 @@ export const getDetails = () => {
     })
 }
 
-export const getImage = (url) => {
-    console.log(url, 'getting')
-      return api.get(`/api/image/${url}`).then((result) => {
-        const data = result.data.image;
+export const getImage = () => {
+    console.log('about', 'getting')
+      return api.get(`/api/image/about`).then((result) => {
+        const data = result.data.image.data;
   
         // let TYPED_ARRAY = new Uint8Array(data); //
   
@@ -29,13 +29,14 @@ export const getImage = (url) => {
   }
 
   export const patchDetails = (obj) => {
+    console.log(obj)
     return api.patch('/api/details', obj).then((result) => {
       console.log(result.data)
       return result.data
     })
   }
 
-  export const postImage = (image_id, image) => {
+  export const postImage = (image) => {
 
     const axiosConfig = {
       responseType: "arraybuffer",
@@ -47,7 +48,7 @@ export const getImage = (url) => {
     console.log('uploading...')
     console.log(body)
   
-    return api.post(`/image/${image_id}`, body, axiosConfig).then((result) => {
+    return api.post(`api/image/about`, body, axiosConfig).then((result) => {
       console.log('uploaded')
       return result.data
     })

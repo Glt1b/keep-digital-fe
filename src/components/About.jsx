@@ -1,18 +1,30 @@
 import { React, useEffect, useState, useContext } from "react";
-
 import { DetailsContext } from '../context/Details';
+import parse from 'html-react-parser';
+import { getImage } from "../api";
 
 export function About() {
 
-    const { details, setDetails } = useContext(DetailsContext)
+    const { details, setDetails } = useContext(DetailsContext);
+    const [image, setImage] = useState(false);
+
+    useEffect(() => {
+ 
+      getImage().then((response) => {
+        const obj = {
+          data_url: response
+        }
+        setImage(obj);
+      })
+    }, [])
 
     return (
         <div className="About">
         <div className="image">
-          <img src="https://i.pinimg.com/564x/59/32/29/593229739184504afd9507cc42a9cb86.jpg" />
+          { image ? <img src={image.data_url}/> : <p>Loading...</p> }
         </div>
         <div className="text">
-          <p>{details.text_about}</p>
+          <p>{parse(details.text_about)}</p>
         </div>
       </div>
     )

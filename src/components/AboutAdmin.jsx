@@ -1,26 +1,52 @@
 import { React, useEffect, useState, useContext } from "react";
 import ImageUploading from 'react-images-uploading';
+import { getImage, postImage } from "../api";
 import { DetailsContext } from '../context/Details';
 import { MyEditor } from "./MyEditor";
+
 
 export function AboutAdmin() {
 
     const { details, setDetails } = useContext(DetailsContext);
-    console.log(details)
 
     //image handle
     const [images, setImages] = useState([]);
+    const [initialLoad, setInitialLoad] = useState(true);
     const maxNumber = 1;
   
-    const onChange = (imageList, addUpdateIndex) => {
+    const onChange = async (imageList, addUpdateIndex) => {
       // data for submit
       setImages(imageList);
+      
     };
+
+    useEffect(() => {
+      if(images.length !== 0 && !initialLoad){
+        postImage(images[0].data_url)
+      }
+    }, [images])
+
+    useEffect(() => {
+      if(initialLoad){
+        getImage().then((response) => {
+          const obj = {
+            data_url: response
+          }
+          setImages([obj]);
+        })
+      }
+      setInitialLoad(false)
+    }, [images])
+
+  
 
     return (
         <div className="About">
         <div className="image">
+
+
         <ImageUploading
+        multiple
         value={images}
         onChange={onChange}
         maxNumber={maxNumber}
@@ -29,6 +55,7 @@ export function AboutAdmin() {
         {({
           imageList,
           onImageUpload,
+          onImageUpdate,
           onImageRemove,
           isDragging,
           dragProps,
@@ -40,15 +67,24 @@ export function AboutAdmin() {
               onClick={onImageUpload}
               {...dragProps}
             >
-              Upload Image
+              Upload image
             </button>
             &nbsp;
-
-               { images[0] ? (<img src={images[0]} alt=""  />) : null} 
     
+            {imageList.map((image, index) => (
+              <div key={index} className="image-item">
+                <img src={image['data_url']} alt="" className="img"/>
+                <div className="image-item__btn-wrapper">
+                  <button onClick={() => onImageUpdate(index)}>Update</button>
+                  <button onClick={() => onImageRemove(index)}>Remove</button>
+                </div>
+              </div>
+            ))}
           </div>
         )}
       </ImageUploading>
+
+
         </div>
         <div className="text">
           <MyEditor />

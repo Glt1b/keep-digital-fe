@@ -6,8 +6,7 @@ export const DetailsProvider = ({ children }) => {
   const [details, setDetails] = useState({
     "active_sections": [],
     "text_about": "",
-    "image_about": "",
-    "gallery": [],
+    "image_about": ""
 });
 
 
